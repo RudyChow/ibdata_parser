@@ -37,8 +37,8 @@ func (parser *IbdataParser) ParsePage(pageNo uint32, parserType uint8) (*structu
 	}
 
 	page := structure.NewPage()
-	// 解析头部
-	if parserType&ParserPageHeader == ParserPageHeader {
+	// 解析头部(如果解析body,必须要解析header)
+	if parserType&ParserPageHeader == ParserPageHeader || parserType&ParserPageBody == ParserPageBody {
 		page.UnmarshalHeader(buf[structure.PageHeaderOffset:structure.PageHeaderSize])
 	}
 	// 解析body

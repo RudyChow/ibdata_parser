@@ -20,49 +20,59 @@ import (
 	"fmt"
 	"ibdata_parser/structure"
 	"ibdata_parser/tools"
+	"os"
 
 	"github.com/spf13/cobra"
 )
 
-var pageOffset uint32
+var writeFile string
 
-// simpleCmd represents the simple command
-var simpleCmd = &cobra.Command{
-	Use:   "simple",
-	Short: "get a simple page (only show file header and file trailer)",
+// detailCmd represents the detail command
+var detailCmd = &cobra.Command{
+	Use:   "detail",
+	Short: "A brief description of your command",
 	Long:  "",
 	Run: func(cmd *cobra.Command, args []string) {
 		parser := tools.GetParser(ibdataFile)
-		page, err := parser.ParsePage(pageOffset, tools.ParserPageHeader|tools.ParserPageTrailer)
+		page, err := parser.ParsePage(pageOffset, tools.ParserPageHeader|tools.ParserPageBody|tools.ParserPageTrailer)
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
 
-		outputSimplePage(page)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		// 空则输出 stdout 否则写文件
+		if writeFile != "" {
+
+			file, err := os.OpenFile(writeFile, os.O_CREATE|os.O_WRONLY, 0666)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			os.Stdout = file
+		}
+		outputDetailPage(page)
 
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(simpleCmd)
+	rootCmd.AddCommand(detailCmd)
 
-	simpleCmd.Flags().Uint32VarP(&pageOffset, "page", "p", 0, "innodb page offset")
+	detailCmd.Flags().StringVarP(&writeFile, "write", "w", "", "output to file")
 }
 
-func outputSimplePage(page *structure.Page) {
+func outputDetailPage(page *structure.Page) {
 	outputPageHeader(page)
+	outputPageBody(page)
 	outputPageTrailer(page)
 }
 
-func outputPageHeader(page *structure.Page) {
-	fmt.Println("File Header:")
-	jsonHeader, _ := json.MarshalIndent(page.FileHeader, "", "\t")
-	fmt.Println(string(jsonHeader))
-}
-
-func outputPageTrailer(page *structure.Page) {
-	fmt.Println("File Trailer:")
-	jsonHeader, _ := json.MarshalIndent(page.FileTrailer, "", "\t")
-	fmt.Println(string(jsonHeader))
+func outputPageBody(page *structure.Page) {
+	fmt.Println("File Body:")
+	jsonBody, _ := json.MarshalIndent(page.Body, "", "\t")
+	fmt.Println(string(jsonBody))
 }

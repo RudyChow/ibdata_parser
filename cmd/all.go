@@ -34,11 +34,10 @@ var allCmd = &cobra.Command{
 
 		sumResult := make(map[uint16]uint32)
 		for _, page := range pages {
-			fmt.Printf("page offset %d, page type <%s>\n", page.FileHeader.Offset, page.FileHeader.GetTypeName())
+			fmt.Printf("page offset %08d, page type <%s>\n", page.FileHeader.Offset, page.FileHeader.GetTypeName())
 			sumResult[page.FileHeader.Ptype] = sumResult[page.FileHeader.Ptype] + 1
 		}
-		fmt.Println("")
-		fmt.Printf("Total number of page: %d\n", len(pages))
+		fmt.Printf("\nTotal number of page: %d\n", len(pages))
 		for ptype, sum := range sumResult {
 			fmt.Printf("%s: %d\n", structure.PageTypeNameDict[ptype], sum)
 		}
