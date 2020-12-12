@@ -29,8 +29,8 @@ func (xdes *Xdes) Unmarshal(data []byte) {
 type XdesEntry struct {
 	SegmentID       uint64    // 8B
 	ListNode        *ListNode // 12B
-	State           uint32    // 4B
-	PageStateBitmap [16]byte  // 16B
+	State           uint32    // 4B FREE空闲的区、FREE_FRAG有剩余空间的碎片区、FULL_FRAG没有剩余空间的碎片区和FSEG附属于某个段的区
+	PageStateBitmap [16]byte  // 16B 一共128个bit，一个区有64页，所以每两个bit表示一个页的信息，第一个bit表示页是否空闲，第二个bit则暂无用处
 }
 
 // InitXdesEntry 通过byte初始化一个basenode

@@ -57,7 +57,7 @@ var PageTypeNameDict = map[uint16]string{
 	FilPageTypeBlob:                   "Uncompressed BLOB page",
 	FilPageTypeZBlob:                  "First compressed BLOB page",
 	FilPageTypeZBlob2:                 "Subsequent compressed BLOB page",
-	FilPageTypeUnknown:                "garbage",
+	FilPageTypeUnknown:                "Unknown",
 	FilPageTypeCompressed:             "Compressed page",
 	FilPageTypeEncrypted:              "Encrypted page",
 	FilPageTypeCompressedAndEncrypted: "Compressed and Encrypted page",

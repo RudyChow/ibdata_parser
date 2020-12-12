@@ -1,3 +1,4 @@
 .vscode
 ibdata1
 *.log
+*.ibd

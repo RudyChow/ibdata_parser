@@ -32,9 +32,9 @@ type FileSpaceHeader struct {
 	FreeLimit           uint32        // 尚未被初始化的最小页号，大于或等于这个页号的区对应的XDES Entry结构都没有被加入FREE链表 4B
 	SpaceFlags          uint32        // 表空间的一些占用存储空间比较小的属性 4B
 	FragNUsed           uint32        // FREE_FRAG链表中已使用的页面数量 4B
-	FreeList            *ListBaseNode // FREE链表的基节点 16B
-	FreeFragList        *ListBaseNode // FREE_FRAG链表的基节点 16B
-	FullFragList        *ListBaseNode // FULL_FRAG链表的基节点 16B
+	FreeList            *ListBaseNode // （直属于表空间）FREE链表的基节点 16B
+	FreeFragList        *ListBaseNode // （直属于表空间）FREE_FRAG链表的基节点 16B
+	FullFragList        *ListBaseNode // （直属于表空间）FULL_FRAG链表的基节点 16B
 	NextUnusedSegmentID uint64        // 当前表空间中下一个未使用的 Segment ID
 	SegInodesFullList   *ListBaseNode // SEG_INODES_FULL链表的基节点 16B
 	SegInodesFreeList   *ListBaseNode // SEG_INODES_FREE链表的基节点 16B

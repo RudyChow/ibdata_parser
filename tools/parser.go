@@ -43,14 +43,14 @@ func (parser *IbdataParser) ParsePage(pageNo uint32, parserType uint8) (*structu
 	}
 	// 解析body
 	if parserType&ParserPageBody == ParserPageBody {
-		page.UnmarshalBody(buf[structure.PageBodyOffset : structure.PageBodyOffset+structure.PageBodySize])
+		err = page.UnmarshalBody(buf[structure.PageBodyOffset : structure.PageBodyOffset+structure.PageBodySize])
 	}
 	// 解析尾部
 	if parserType&ParserPageTrailer == ParserPageTrailer {
 		page.UnmarshalTrailer(buf[structure.PageTrailerOffset : structure.PageTrailerOffset+structure.PageTrailerSize])
 	}
 
-	return page, nil
+	return page, err
 }
 
 // FastParseEveryPage 快速解析每个页

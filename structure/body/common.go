@@ -24,7 +24,7 @@ func InitListNode(data []byte) *ListNode {
 type ListBaseNode struct {
 	ListLength          uint32
 	FirstNodePageNumber uint32
-	FirstNOdeOffset     uint16
+	FirstNodeOffset     uint16
 	LastNodePageNumber  uint32
 	LastNodeOffset      uint16
 }
@@ -34,15 +34,24 @@ func InitListBaseNode(data []byte) *ListBaseNode {
 	return &ListBaseNode{
 		ListLength:          binary.BigEndian.Uint32(data[0:4]),
 		FirstNodePageNumber: binary.BigEndian.Uint32(data[4:8]),
-		FirstNOdeOffset:     binary.BigEndian.Uint16(data[8:10]),
+		FirstNodeOffset:     binary.BigEndian.Uint16(data[8:10]),
 		LastNodePageNumber:  binary.BigEndian.Uint32(data[10:14]),
 		LastNodeOffset:      binary.BigEndian.Uint16(data[14:16]),
 	}
 }
 
-// SegmentHeader 段头部 12B
+// SegmentHeader 段头部信息 记录本页面所在段对应的INODE Entry位置信息 10B
 type SegmentHeader struct {
 	SpaceIDOfTheInodeEntry    uint32
 	PageNumberOfTheInodeEntry uint32
-	ByteOffsetOfTheInodeExtry uint32
+	ByteOffsetOfTheInodeExtry uint16
+}
+
+// InitSegmentHeader 通过byte初始化一个SegmentHeader
+func InitSegmentHeader(data []byte) *SegmentHeader {
+	return &SegmentHeader{
+		SpaceIDOfTheInodeEntry:    binary.BigEndian.Uint32(data[0:4]),
+		PageNumberOfTheInodeEntry: binary.BigEndian.Uint32(data[4:8]),
+		ByteOffsetOfTheInodeExtry: binary.BigEndian.Uint16(data[8:10]),
+	}
 }

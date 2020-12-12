@@ -52,6 +52,7 @@ var detailCmd = &cobra.Command{
 				fmt.Println(err)
 				return
 			}
+			defer file.Close()
 			os.Stdout = file
 		}
 		outputDetailPage(page)
@@ -63,6 +64,7 @@ func init() {
 	rootCmd.AddCommand(detailCmd)
 
 	detailCmd.Flags().StringVarP(&writeFile, "write", "w", "", "output to file")
+	detailCmd.Flags().Uint32VarP(&pageOffset, "page", "p", 0, "innodb page offset")
 }
 
 func outputDetailPage(page *structure.Page) {
