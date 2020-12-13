@@ -46,7 +46,6 @@ var detailCmd = &cobra.Command{
 		}
 		// 空则输出 stdout 否则写文件
 		if writeFile != "" {
-
 			file, err := os.OpenFile(writeFile, os.O_CREATE|os.O_WRONLY, 0666)
 			if err != nil {
 				fmt.Println(err)

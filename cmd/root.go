@@ -29,7 +29,7 @@ var (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "ibParser",
+	Use:   "ibdata_parser",
 	Short: "A brief description of your application",
 	Long:  "oops",
 	// Uncomment the following line if your bare application

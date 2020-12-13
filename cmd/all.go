@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"ibdata_parser/structure"
 	"ibdata_parser/tools"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -31,6 +32,17 @@ var allCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		parser := tools.GetParser(ibdataFile)
 		pages := parser.FastParseEveryPage()
+
+		// 空则输出 stdout 否则写文件
+		if writeFile != "" {
+			file, err := os.OpenFile(writeFile, os.O_CREATE|os.O_WRONLY, 0666)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			defer file.Close()
+			os.Stdout = file
+		}
 
 		sumResult := make(map[uint16]uint32)
 		for _, page := range pages {
@@ -46,4 +58,6 @@ var allCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(allCmd)
+
+	allCmd.Flags().StringVarP(&writeFile, "write", "w", "", "output to file")
 }

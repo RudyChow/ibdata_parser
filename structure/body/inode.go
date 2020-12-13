@@ -2,6 +2,7 @@ package body
 
 import "encoding/binary"
 
+// INODE 相关常量
 const (
 	InodeEntriesLen    = 85
 	FragmentEntrySize  = 192

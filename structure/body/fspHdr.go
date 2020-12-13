@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 )
 
+// FSP_HDR 相关常量
 const (
 	FileSpaceHeaderSize = 112
 )
@@ -28,16 +29,16 @@ func (hdr *Hdr) Unmarshal(data []byte) {
 type FileSpaceHeader struct {
 	SpaceID uint32 // 表空间id 4B
 	// not used 4B
-	Size                uint32        // 当前表空间占有的页面数 4B
-	FreeLimit           uint32        // 尚未被初始化的最小页号，大于或等于这个页号的区对应的XDES Entry结构都没有被加入FREE链表 4B
-	SpaceFlags          uint32        // 表空间的一些占用存储空间比较小的属性 4B
-	FragNUsed           uint32        // FREE_FRAG链表中已使用的页面数量 4B
-	FreeList            *ListBaseNode // （直属于表空间）FREE链表的基节点 16B
-	FreeFragList        *ListBaseNode // （直属于表空间）FREE_FRAG链表的基节点 16B
-	FullFragList        *ListBaseNode // （直属于表空间）FULL_FRAG链表的基节点 16B
-	NextUnusedSegmentID uint64        // 当前表空间中下一个未使用的 Segment ID
-	SegInodesFullList   *ListBaseNode // SEG_INODES_FULL链表的基节点 16B
-	SegInodesFreeList   *ListBaseNode // SEG_INODES_FREE链表的基节点 16B
+	Size                uint32        // 当前表空间总的PAGE个数，扩展文件时需要更新该值 4B
+	FreeLimit           uint32        // 当前尚未初始化的最小Page No。从该Page往后的都尚未加入到表空间的FREE LIST上 4B
+	SpaceFlags          uint32        // 当前表空间的FLAG信息 4B
+	FragNUsed           uint32        // FSP_FREE_FRAG链表上已被使用的Page数，用于快速计算该链表上可用空闲Page数 4B
+	FreeList            *ListBaseNode // （直属于表空间）FREE链表的基节点，当一个Extent中所有page都未被使用时，放到该链表上，可以用于随后的分配 16B
+	FreeFragList        *ListBaseNode // （直属于表空间）FREE_FRAG链表的基节点，通常这样的Extent中的Page可能归属于不同的segment，用于segment frag array page的分配 16B
+	FullFragList        *ListBaseNode // （直属于表空间）FULL_FRAG链表的基节点。Extent中所有的page都被使用掉时，会放到该链表上，当有Page从该Extent释放时，则移回FREE_FRAG链表 16B
+	NextUnusedSegmentID uint64        // 当前文件中最大Segment ID + 1，用于段分配时的seg id计数器 ID
+	SegInodesFullList   *ListBaseNode // SEG_INODES_FULL链表的基节点，已被完全用满的Inode Page链表 16B
+	SegInodesFreeList   *ListBaseNode // SEG_INODES_FREE链表的基节点，至少存在一个空闲Inode Entry的Inode Page被放到该链表上 16B
 }
 
 // unmarshal 解析 FSP Header

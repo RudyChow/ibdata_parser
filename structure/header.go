@@ -86,7 +86,7 @@ type FileHeader struct {
 	Perv               uint32 // 上一页
 	Next               uint32 // 下一页
 	Lsn                uint64 // 页面被最后修改时的lsn
-	Ptype              uint16 // 页面类型
+	Ptype              uint16 `json:"Type"` // 页面类型
 	FileFlushLsn       uint64 // 文件更新的lsn
 	ArchLogNoOrSpaceID uint32 // 所属表空间id
 }

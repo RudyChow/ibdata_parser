@@ -59,7 +59,10 @@ func (page *Page) UnmarshalBody(data []byte) error {
 		} else {
 			return errors.New("unfinish feature")
 		}
-
+	case FilPageIbufBitmap: // IBUFBITMAP
+		page.Body = body.NewIbufBitmap()
+	case FilPageTypeIndex: // INDEX
+		page.Body = body.NewIndex()
 	default:
 		return errors.New("unfinish feature")
 
