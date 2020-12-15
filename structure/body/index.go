@@ -68,20 +68,20 @@ func (index *Index) Unmarshal(data []byte) {
 
 // IndexHeader 索引页头 56B
 type IndexHeader struct {
-	NDirSlots  uint16 // 2B 在页目录中的槽数量
-	HeapTop    uint16 // 2B 还未使用的空间最小地址，也就是说从该地址之后就是Free Space
-	NHeap      uint16 // 2B 本页中的记录的数量（包括最小和最大记录以及标记为删除的记录）
-	Free       uint16 // 2B 第一个已经标记为删除的记录地址（各个已删除的记录通过next_record也会组成一个单链表，这个单链表中的记录可以被重新利用）
-	Garbage    uint16 // 2B 已删除记录占用的字节数
-	LastInsert uint16 // 2B 最后插入记录的位置
-	Dircetion  uint16 // 2B 记录插入的方向
-	NDircetion uint16 // 2B 一个方向连续插入的记录数量
-	NRecs      uint16 // 2B 该页中记录的数量（不包括最小和最大记录以及被标记为删除的记录）
-	MaxTrxID   uint64 // 8B 修改当前页的最大事务ID，该值仅在二级索引中定义
-	Level      uint16 // 2B 当前页在B+树中所处的层级
-	IndexID    uint64 // 8B 索引ID，表示当前页属于哪个索引
-	BtrSegLeaf []byte // 10B B+树叶子段的头部信息，仅在B+树的Root页定义
-	BtrSegTop  []byte // 10B B+树非叶子段的头部信息，仅在B+树的Root页定义
+	NDirSlots  uint16         // 2B 在页目录中的槽数量
+	HeapTop    uint16         // 2B 还未使用的空间最小地址，也就是说从该地址之后就是Free Space
+	NHeap      uint16         // 2B 本页中的记录的数量（包括最小和最大记录以及标记为删除的记录）
+	Free       uint16         // 2B 第一个已经标记为删除的记录地址（各个已删除的记录通过next_record也会组成一个单链表，这个单链表中的记录可以被重新利用）
+	Garbage    uint16         // 2B 已删除记录占用的字节数
+	LastInsert uint16         // 2B 最后插入记录的位置
+	Dircetion  uint16         // 2B 记录插入的方向
+	NDircetion uint16         // 2B 一个方向连续插入的记录数量
+	NRecs      uint16         // 2B 该页中记录的数量（不包括最小和最大记录以及被标记为删除的记录）
+	MaxTrxID   uint64         // 8B 修改当前页的最大事务ID，该值仅在二级索引中定义
+	Level      uint16         // 2B 当前页在B+树中所处的层级
+	IndexID    uint64         // 8B 索引ID，表示当前页属于哪个索引
+	BtrSegLeaf *SegmentHeader // 10B B+树叶子段的头部信息，仅在B+树的Root页定义
+	BtrSegTop  *SegmentHeader // 10B B+树非叶子段的头部信息，仅在B+树的Root页定义
 }
 
 // Unmarshal 解析
@@ -98,8 +98,8 @@ func (indexHeader *IndexHeader) Unmarshal(data []byte) {
 	indexHeader.MaxTrxID = binary.BigEndian.Uint64(data[18:26])
 	indexHeader.Level = binary.BigEndian.Uint16(data[26:28])
 	indexHeader.IndexID = binary.BigEndian.Uint64(data[28:36])
-	indexHeader.BtrSegLeaf = data[36:46]
-	indexHeader.BtrSegTop = data[46:56]
+	indexHeader.BtrSegLeaf = InitSegmentHeader(data[36:46])
+	indexHeader.BtrSegTop = InitSegmentHeader(data[46:56])
 }
 
 // RecordInfo 每个记录头一定会有的信息

@@ -44,7 +44,7 @@ func InitListBaseNode(data []byte) *ListBaseNode {
 type SegmentHeader struct {
 	SpaceIDOfTheInodeEntry    uint32
 	PageNumberOfTheInodeEntry uint32
-	ByteOffsetOfTheInodeExtry uint16
+	ByteOffsetOfTheInodeEntry uint16
 }
 
 // InitSegmentHeader 通过byte初始化一个SegmentHeader
@@ -52,6 +52,6 @@ func InitSegmentHeader(data []byte) *SegmentHeader {
 	return &SegmentHeader{
 		SpaceIDOfTheInodeEntry:    binary.BigEndian.Uint32(data[0:4]),
 		PageNumberOfTheInodeEntry: binary.BigEndian.Uint32(data[4:8]),
-		ByteOffsetOfTheInodeExtry: binary.BigEndian.Uint16(data[8:10]),
+		ByteOffsetOfTheInodeEntry: binary.BigEndian.Uint16(data[8:10]),
 	}
 }
